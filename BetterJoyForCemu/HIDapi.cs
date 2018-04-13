@@ -3,12 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace BetterJoyForCemu {
 	public class HIDapi {
-		#if LINUX
-		  const string dll = "libhidapi.so";
-		#else
-			const string dll = "hidapi.dll";
-		#endif
+		const string dll = "hidapi.dll";
 
+		[StructLayout(LayoutKind.Sequential)]
 		public struct hid_device_info {
 			[MarshalAs(UnmanagedType.LPStr)]
 			public string path;
@@ -86,15 +83,25 @@ namespace BetterJoyForCemu {
 			if (!phid_device_info.Equals(IntPtr.Zero)) {
 				hid_device_info hdev = (hid_device_info)Marshal.PtrToStructure(phid_device_info, typeof(hid_device_info));
 
-				Console.WriteLine(string.Format("path:       {0}", hdev.path));
-				Console.WriteLine(string.Format("vendor id:  {0:X}", hdev.vendor_id));
-				Console.WriteLine(string.Format("product id: {0:X}", hdev.product_id));
-				Console.WriteLine(string.Format("usage page: {0:X}", hdev.usage_page));
-				Console.WriteLine(string.Format("usage:      {0:X}", hdev.usage));
-				Console.WriteLine("");
+				PrintDevInfo(ref hdev);
 
 				PrintEnumeration(hdev.next);
 			}
+		}
+
+		static void PrintDevInfo(ref hid_device_info devinfo) {
+			Console.WriteLine($"path:                {devinfo.path}");
+			Console.WriteLine($"vendor_id:           0x{devinfo.vendor_id:x4}");
+			Console.WriteLine($"product_id:          0x{devinfo.product_id:x4}");
+			Console.WriteLine($"serial_number:       {devinfo.serial_number}");
+			Console.WriteLine($"release_number:      0x{devinfo.release_number:x4}");
+			Console.WriteLine($"manufacturer_string: {devinfo.manufacturer_string}");
+			Console.WriteLine($"product_string:      {devinfo.product_string}");
+			Console.WriteLine($"usage_page:          0x{devinfo.usage_page:x4}");
+			Console.WriteLine($"usage:               0x{devinfo.usage:x4}");
+			Console.WriteLine($"interface_number:    {devinfo.interface_number}");
+
+			Console.WriteLine("");
 		}
 
 		static string _getDevicePath(IntPtr phid_device_info, ushort usagePage, ushort usage) {
