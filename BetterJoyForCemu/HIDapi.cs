@@ -89,7 +89,7 @@ namespace BetterJoyForCemu {
 			}
 		}
 
-		static void PrintDevInfo(ref hid_device_info devinfo) {
+		internal static void PrintDevInfo(ref hid_device_info devinfo) {
 			Console.WriteLine($"path:                {devinfo.path}");
 			Console.WriteLine($"vendor_id:           0x{devinfo.vendor_id:x4}");
 			Console.WriteLine($"product_id:          0x{devinfo.product_id:x4}");

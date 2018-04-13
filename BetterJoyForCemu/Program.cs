@@ -68,6 +68,8 @@ namespace BetterJoyForCemu {
 						Console.WriteLine("Non Joy-Con input device skipped.");
 					}
 
+					HIDapi.PrintDevInfo(ref enumerate);
+
 					IntPtr handle = HIDapi.hid_open_path(enumerate.path);
 					try {
 						HIDapi.hid_set_nonblocking(handle, 1);
@@ -78,10 +80,10 @@ namespace BetterJoyForCemu {
 
 					j.Add(new Joycon(handle, EnableIMU, EnableLocalize & EnableIMU, 0.05f, isLeft, j.Count, enumerate.product_id == product_pro, enumerate.serial_number == "000000000001"));
 
-					byte[] mac = new byte[6];
-					for (int n = 0; n < 6; n++)
-						mac[n] = byte.Parse(enumerate.serial_number.Substring(n * 2, 2), System.Globalization.NumberStyles.HexNumber);
-					j[j.Count - 1].PadMacAddress = new PhysicalAddress(mac);		
+					byte[] mac = new byte[] { 0x98, 0xB6, 0xE9, 0x7B, 0x74, 0x99 };
+					//for (int n = 0; n < 6; n++)
+					//	mac[n] = byte.Parse(enumerate.serial_number.Substring(n * 2, 2), System.Globalization.NumberStyles.HexNumber);
+					j[j.Count - 1].PadMacAddress = new PhysicalAddress(mac);
 
 					++i;
 				}
